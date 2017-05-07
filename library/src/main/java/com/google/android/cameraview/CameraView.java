@@ -207,18 +207,18 @@ public class CameraView extends FrameLayout {
         assert ratio != null;
         if (height < width * ratio.getY() / ratio.getX()) {
             mImpl.getView().measure(
-                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST),
                     MeasureSpec.makeMeasureSpec(width * ratio.getY() / ratio.getX(),
-                            MeasureSpec.EXACTLY));
+                            MeasureSpec.AT_MOST));
         } else {
             mImpl.getView().measure(
                     MeasureSpec.makeMeasureSpec(height * ratio.getX() / ratio.getY(),
-                            MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+                            MeasureSpec.AT_MOST),
+                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
         }
     }
 
-    @Override
+    /*@Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         Log.i(TAG, "onLayout() called with: " + "changed = [" + changed + "], left = [" + left
                 + "], top = [" + top + "], right = [" + right + "], bottom = [" + bottom + "]");
@@ -246,7 +246,7 @@ public class CameraView extends FrameLayout {
         }
 
         super.onLayout(changed, left, top, right, bottom);
-    }
+    }*/
 
     @Override
     protected Parcelable onSaveInstanceState() {
