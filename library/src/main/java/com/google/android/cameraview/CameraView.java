@@ -224,10 +224,23 @@ public class CameraView extends FrameLayout {
                 + "], top = [" + top + "], right = [" + right + "], bottom = [" + bottom + "]");
         Log.i(TAG, "onLayout: mImpl.getView().getMeasuredHeight(): " + mImpl.getView().getMeasuredHeight());
         if (changed) {
+            boolean layoutAltered = false;
+            int yOffset = 0;
+            int xOffset = 0;
             if (mImpl.getView().getMeasuredHeight() > bottom - top) {
-                int offset = (mImpl.getView().getMeasuredHeight() - (bottom - top)) / 2;
-                Log.i(TAG, "onLayout: offset: " + offset);
-                mImpl.getView().layout(left, offset, right, bottom + offset);
+                yOffset = (mImpl.getView().getMeasuredHeight() - (bottom - top)) / 2;
+                Log.i(TAG, "onLayout: yOffset: " + yOffset);
+                layoutAltered = true;
+            }
+
+            if (mImpl.getView().getMeasuredWidth() > right - left) {
+                xOffset = (mImpl.getView().getMeasuredWidth() - (right - left)) / 2;
+                Log.i(TAG, "onLayout: xOffset: " + xOffset);
+                layoutAltered = true;
+            }
+
+            if (layoutAltered) {
+                mImpl.getView().layout(xOffset, yOffset, right + xOffset, bottom + yOffset);
                 return;
             }
         }
