@@ -195,7 +195,7 @@ public class CameraView extends FrameLayout {
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             }
         } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            super.onMeasure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         }
         // Measure the TextureView
         int width = getMeasuredWidth();
@@ -207,14 +207,14 @@ public class CameraView extends FrameLayout {
         assert ratio != null;
         if (height < width * ratio.getY() / ratio.getX()) {
             mImpl.getView().measure(
-                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST),
+                    MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(width * ratio.getY() / ratio.getX(),
-                            MeasureSpec.AT_MOST));
+                            MeasureSpec.EXACTLY));
         } else {
             mImpl.getView().measure(
                     MeasureSpec.makeMeasureSpec(height * ratio.getX() / ratio.getY(),
-                            MeasureSpec.AT_MOST),
-                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST));
+                            MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         }
     }
 
