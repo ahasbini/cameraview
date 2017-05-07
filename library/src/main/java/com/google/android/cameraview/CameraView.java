@@ -29,6 +29,7 @@ import android.support.v4.os.ParcelableCompat;
 import android.support.v4.os.ParcelableCompatCreatorCallbacks;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import java.lang.annotation.Retention;
@@ -37,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class CameraView extends FrameLayout {
+
+    private static final String TAG = CameraView.class.getSimpleName();
 
     /** The camera device faces the opposite direction as the device's screen. */
     public static final int FACING_BACK = Constants.FACING_BACK;
@@ -156,6 +159,7 @@ public class CameraView extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.i(TAG, "onMeasure: called");
         if (isInEditMode()){
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
@@ -212,6 +216,23 @@ public class CameraView extends FrameLayout {
                             MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
         }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        Log.i(TAG, "onLayout() called with: " + "changed = [" + changed + "], left = [" + left
+                + "], top = [" + top + "], right = [" + right + "], bottom = [" + bottom + "]");
+        Log.i(TAG, "onLayout: mImpl.getView().getMeasuredHeight(): " + mImpl.getView().getMeasuredHeight());
+        if (changed) {
+            if (mImpl.getView().getMeasuredHeight() > bottom - top) {
+                int offset = (mImpl.getView().getMeasuredHeight() - (bottom - top)) / 2;
+                Log.i(TAG, "onLayout: offset: " + offset);
+                mImpl.getView().layout(left, offset, right, bottom + offset);
+                return;
+            }
+        }
+
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
