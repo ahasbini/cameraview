@@ -12,8 +12,7 @@ Requires API Level 9. The library uses Camera 1 API on API Level 9-20 and Camera
 |:---------:|------------|--------------|
 | 9-13      | Camera1    | SurfaceView  |
 | 14-20     | Camera1    | TextureView  |
-| 21-23     | Camera2    | TextureView  |
-| 24        | Camera2    | SurfaceView  |
+| >= 21     | Camera2    | TextureView  |
 
 ## Features
 
