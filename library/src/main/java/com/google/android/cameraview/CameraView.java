@@ -449,6 +449,13 @@ public class CameraView extends FrameLayout {
             }
         }
 
+        @Override
+        public void onPreviewFrame(byte[] data) {
+            for (Callback callback : mCallbacks) {
+                callback.onPreviewFrame(CameraView.this, data);
+            }
+        }
+
         public void reserveRequestLayoutOnOpen() {
             mRequestLayoutOnOpen = true;
         }
@@ -534,6 +541,16 @@ public class CameraView extends FrameLayout {
          * @param data       JPEG data.
          */
         public void onPictureTaken(CameraView cameraView, byte[] data) {
+        }
+
+        /**
+         * Called when a preview frame is available.
+         *
+         * @param cameraView The associated {@link CameraView}.
+         * @param data       JPEG data.
+         */
+        // TODO: 14-May-17 ahasbini: check data type
+        public void onPreviewFrame(CameraView cameraView, byte[] data) {
         }
     }
 

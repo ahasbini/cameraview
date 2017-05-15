@@ -306,6 +306,12 @@ class Camera1 extends CameraViewImpl {
             mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
         }
         adjustCameraParameters();
+        mCamera.setPreviewCallback(new Camera.PreviewCallback() {
+            @Override
+            public void onPreviewFrame(byte[] data, Camera camera) {
+                mCallback.onPreviewFrame(data);
+            }
+        });
         mCamera.setDisplayOrientation(calcCameraRotation(mDisplayOrientation));
         mCallback.onCameraOpened();
     }
@@ -335,6 +341,8 @@ class Camera1 extends CameraViewImpl {
             if (mShowingPreview) {
                 mCamera.stopPreview();
             }
+            // TODO: 14-May-17 ahasbini: control preview format
+            //mCameraParameters.setPreviewFormat(ImageFormat.YUV_420_888);
             mCameraParameters.setPreviewSize(size.getWidth(), size.getHeight());
             mCameraParameters.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
             mCameraParameters.setRotation(calcCameraRotation(mDisplayOrientation));
