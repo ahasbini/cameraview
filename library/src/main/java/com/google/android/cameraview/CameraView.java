@@ -536,6 +536,8 @@ public class CameraView extends FrameLayout {
 
         /**
          * Called when a picture is taken.
+         * <p>This will be called in a separate thread to keep a smooth UI.
+         * Any UI changes should be done by posting to a main UI handler.</p>
          *
          * @param cameraView The associated {@link CameraView}.
          * @param data       JPEG data.
@@ -545,11 +547,12 @@ public class CameraView extends FrameLayout {
 
         /**
          * Called when a preview frame is available.
+         * <p>This will be called in a separate thread to keep a smooth UI.
+         * Any UI changes should be done by posting to a main UI handler.</p>
          *
          * @param cameraView The associated {@link CameraView}.
          * @param data       JPEG data.
          */
-        // TODO: 14-May-17 ahasbini: check data type
         public void onPreviewFrame(CameraView cameraView, byte[] data) {
         }
     }

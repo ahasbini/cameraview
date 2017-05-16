@@ -20,11 +20,9 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
@@ -88,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private CameraView mCameraView;
 
-    private Handler mBackgroundHandler;
+    private Handler mUiHandler;
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
@@ -107,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mUiHandler = new Handler(getMainLooper());
         mCameraView = (CameraView) findViewById(R.id.camera);
         if (mCameraView != null) {
             mCameraView.addCallback(mCallback);
@@ -152,14 +151,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mBackgroundHandler != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                mBackgroundHandler.getLooper().quitSafely();
-            } else {
-                mBackgroundHandler.getLooper().quit();
-            }
-            mBackgroundHandler = null;
-        }
     }
 
     @Override
@@ -225,15 +216,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private Handler getBackgroundHandler() {
-        if (mBackgroundHandler == null) {
-            HandlerThread thread = new HandlerThread("background");
-            thread.start();
-            mBackgroundHandler = new Handler(thread.getLooper());
-        }
-        return mBackgroundHandler;
-    }
-
     private CameraView.Callback mCallback
             = new CameraView.Callback() {
 
@@ -250,31 +232,33 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(TAG, "onPictureTaken " + data.length);
-            Toast.makeText(cameraView.getContext(), R.string.picture_taken, Toast.LENGTH_SHORT)
-                    .show();
-            getBackgroundHandler().post(new Runnable() {
-                @Override
-                public void run() {
-                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                            "picture.jpg");
-                    OutputStream os = null;
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "picture.jpg");
+            OutputStream os = null;
+            try {
+                os = new FileOutputStream(file);
+                os.write(data);
+                os.close();
+                mUiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, R.string.picture_taken,
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+            } catch (IOException e) {
+                Log.w(TAG, "Cannot write to " + file, e);
+            } finally {
+                if (os != null) {
                     try {
-                        os = new FileOutputStream(file);
-                        os.write(data);
                         os.close();
                     } catch (IOException e) {
-                        Log.w(TAG, "Cannot write to " + file, e);
-                    } finally {
-                        if (os != null) {
-                            try {
-                                os.close();
-                            } catch (IOException e) {
-                                // Ignore
-                            }
-                        }
+                        // Ignore
                     }
                 }
-            });
+            }
+
         }
 
         @Override

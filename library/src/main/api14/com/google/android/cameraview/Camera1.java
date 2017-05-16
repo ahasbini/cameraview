@@ -21,6 +21,7 @@ import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Build;
 import android.support.v4.util.SparseArrayCompat;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
@@ -32,6 +33,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("deprecation")
 class Camera1 extends CameraViewImpl {
+
+    private static final String TAG = Camera1.class.getSimpleName();
 
     private static final int INVALID_CAMERA_ID = -1;
 
@@ -343,7 +346,9 @@ class Camera1 extends CameraViewImpl {
             }
             // TODO: 14-May-17 ahasbini: control preview format
             //mCameraParameters.setPreviewFormat(ImageFormat.YUV_420_888);
+            Log.i(TAG, "Preview size: " + size);
             mCameraParameters.setPreviewSize(size.getWidth(), size.getHeight());
+            Log.i(TAG, "Capture size: " + size);
             mCameraParameters.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
             mCameraParameters.setRotation(calcCameraRotation(mDisplayOrientation));
             setAutoFocusInternal(mAutoFocus);

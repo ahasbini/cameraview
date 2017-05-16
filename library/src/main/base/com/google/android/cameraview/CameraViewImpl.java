@@ -77,7 +77,6 @@ abstract class CameraViewImpl {
 
         void onPictureTaken(byte[] data);
 
-        // TODO: 14-May-17 ahasbini: check data type
         void onPreviewFrame(byte[] data);
 
     }
