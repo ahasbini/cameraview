@@ -261,9 +261,43 @@ public class MainActivity extends AppCompatActivity implements
 
         }
 
+        int count = 0;
+
         @Override
         public void onPreviewFrame(CameraView cameraView, byte[] data) {
             Log.d(TAG, "onPreviewFrame " + data.length);
+            if (count % 50 == 0) {
+                File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        "frame" + (count / 50) + ".jpg");
+                OutputStream os = null;
+                try {
+                    os = new FileOutputStream(file);
+                    os.write(data);
+                    os.flush();
+                    os.close();
+                    mUiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "Frame Saved " + (count / 50),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });
+                } catch (IOException e) {
+                    Log.w(TAG, "Cannot write to " + file, e);
+                } finally {
+                    if (os != null) {
+                        try {
+                            os.close();
+                        } catch (IOException e) {
+                            // Ignore
+                        }
+                    }
+                }
+                count++;
+            } else {
+                count++;
+            }
         }
     };
 

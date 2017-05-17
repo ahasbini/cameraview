@@ -571,6 +571,16 @@ class Camera2 extends CameraViewImpl {
             mPreviewRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mPreviewRequestBuilder.addTarget(surface);
             mPreviewRequestBuilder.addTarget(mPreviewImageReader.getSurface());
+
+            // Calculate JPEG orientation.
+            @SuppressWarnings("ConstantConditions")
+            int sensorOrientation = mCameraCharacteristics.get(
+                    CameraCharacteristics.SENSOR_ORIENTATION);
+            mPreviewRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION,
+                    (sensorOrientation +
+                            mDisplayOrientation * (mFacing == Constants.FACING_FRONT ? 1 : -1) +
+                            360) % 360);
+
             mCamera.createCaptureSession(
                     Arrays.asList(surface, mPreviewImageReader.getSurface(), mCaptureImageReader.getSurface()),
                     mSessionCallback, null);
