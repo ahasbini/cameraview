@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements
 
         }
 
-        int count = 0;
+        int count = 1;
 
         @Override
         public void onPreviewFrame(CameraView cameraView, byte[] data) {
